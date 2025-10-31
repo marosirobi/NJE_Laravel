@@ -5,10 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KapcsolatController;
 use App\Http\Controllers\UzenetController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\FooldalController; // <-- ADD EZT A SORT A TÖBBI USE SOR ALÁ
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [FooldalController::class, 'index'])->name('fooldal');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
