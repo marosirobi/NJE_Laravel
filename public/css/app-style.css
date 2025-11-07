@@ -202,3 +202,30 @@ footer {
     color: #777;
     border-top: 1px solid #e0e0e0;
 }
+
+/* --- Szűrő Űrlap Stílusok --- */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap; /* Tördelés kisebb képernyőn */
+    gap: 1.5rem;
+    align-items: flex-end; /* Gombok és mezők aljának igazítása */
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+}
+.filter-form .field {
+    flex-grow: 1; /* A mezők kitöltik a helyet */
+    margin-bottom: 0; /* Felülírja az alap .field margót */
+}
+.filter-form .field-buttons {
+    flex-grow: 0;
+    display: flex;
+    gap: 0.5rem;
+}
+.filter-form .button-secondary {
+    background-color: #6c757d; /* Szürke gomb */
+}
+.filter-form .button-secondary:hover {
+    background-color: #5a6268;
+}

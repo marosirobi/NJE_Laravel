@@ -15,37 +15,38 @@
 
     <header>
         <nav>
-            <div class="container">
-                <a href="{{ route('fooldal') }}" class="logo">VárosNavigátor</a>
-                
-                <ul>
-                    <li><a href="{{ route('fooldal') }}" class="{{ request()->routeIs('fooldal') ? 'active' : '' }}">Főoldal</a></li>
-                    <li><a href="#" class="">Adatbázis</a></li>
-                    <li><a href="#" class="">Diagram</a></li>
-                    <li><a href="{{ route('kapcsolat.index') }}" class="{{ request()->routeIs('kapcsolat.index') ? 'active' : '' }}">Kapcsolat</a></li>
+    <div class="container">
+        <a href="{{ route('fooldal') }}" class="logo">VárosNavigátor</a>
+        
+        <ul>
+            @auth
+                <li><a href="{{ route('adatbazis.index') }}" class="{{ request()->routeIs('adatbazis.index') ? 'active' : '' }}">Adatbázis</a></li> 
+                <li><a href="#" class="">Diagram</a></li> 
+                <li><a href="{{ route('kapcsolat.index') }}" class="{{ request()->routeIs('kapcsolat.index') ? 'active' : '' }}">Kapcsolat</a></li>
+                <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a></li>
+                <li><a href="{{ route('uzenetek.index') }}" class="{{ request()->routeIs('uzenetek.index') ? 'active' : '' }}">Üzenetek</a></li>
 
-                    @auth
-                        <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a></li>
-                        <li><a href="{{ route('uzenetek.index') }}" class="{{ request()->routeIs('uzenetek.index') ? 'active' : '' }}">Üzenetek</a></li>
+                @if(Auth::user()->role == 'admin')
+                    <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Admin Főoldal</a></li>
 
-                        @if(Auth::user()->role == 'admin')
-                            <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Admin</a></li>
-                        @endif
+                    <li><a href="{{ route('admin.varosok.index') }}" class="{{ request()->routeIs('admin.varosok.*') ? 'active' : '' }}">Városok Kezelése</a></li>
+                @endif
 
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="logout-link">Kijelentkezés</button>
-                            </form>
-                        </li>
-                    
-                    @else
-                        <li><a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">Bejelentkezés</a></li>
-                        <li><a href="{{ route('register') }}" class="{{ request()->routeIs('register') ? 'active' : '' }}">Regisztráció</a></li>
-                    @endauth
-                </ul>
-            </div>
-        </nav>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="logout-link">Kijelentkezés</button>
+                    </form>
+                </li>
+            
+            @else
+                <li><a href="{{ route('kapcsolat.index') }}" class="{{ request()->routeIs('kapcsolat.index') ? 'active' : '' }}">Kapcsolat</a></li>
+                <li><a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">Bejelentkezés</a></li>
+                <li><a href="{{ route('register') }}" class="{{ request()->routeIs('register') ? 'active' : '' }}">Regisztráció</a></li>
+            @endauth
+        </ul>
+    </div>
+</nav>
     </header>
 
     <main>

@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KapcsolatController;
 use App\Http\Controllers\UzenetController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdatbazisController;
+use App\Http\Controllers\Admin\VarosCRUDController;
+use App\Models\Lelekszam;
+
 use App\Http\Controllers\FooldalController; // <-- ADD EZT A SORT A TÖBBI USE SOR ALÁ
 
 Route::get('/', [FooldalController::class, 'index'])->name('fooldal');
@@ -31,5 +35,20 @@ Route::get('/admin/dashboard', [AdminController::class, 'index'])
 Route::get('/kapcsolat', [KapcsolatController::class, 'index'])->name('kapcsolat.index');
 // Űrlap elküldése (POST)
 Route::post('/kapcsolat', [KapcsolatController::class, 'store'])->name('kapcsolat.store');
+
+Route::get('/adatbazis', [AdatbazisController::class, 'index'])
+     ->middleware('auth')
+     ->name('adatbazis.index');
+
+Route::resource('admin/varosok', VarosCRUDController::class)
+     ->middleware(['auth', 'admin'])
+     ->names('admin.varosok');
+
+Route::post('admin/varosok/{varosok}/lelekszam', [VarosCRUDController::class, 'storeLelekszam'])
+     ->middleware(['auth', 'admin'])->name('admin.varosok.lelekszam.store');
+
+// Lélekszám adat törlése
+Route::delete('admin/lelekszam/{varosid}/{ev}', [VarosCRUDController::class, 'destroyLelekszam'])
+     ->middleware(['auth', 'admin'])->name('admin.lelekszam.destroy');
 
 require __DIR__.'/auth.php';
