@@ -9,6 +9,8 @@ use App\Http\Controllers\AdatbazisController;
 use App\Http\Controllers\Admin\VarosCRUDController;
 use App\Models\Lelekszam;
 
+use App\Http\Controllers\DiagramController;
+
 use App\Http\Controllers\FooldalController; // <-- ADD EZT A SORT A TÖBBI USE SOR ALÁ
 
 Route::get('/', [FooldalController::class, 'index'])->name('fooldal');
@@ -50,5 +52,12 @@ Route::post('admin/varosok/{varosok}/lelekszam', [VarosCRUDController::class, 's
 // Lélekszám adat törlése
 Route::delete('admin/lelekszam/{varosid}/{ev}', [VarosCRUDController::class, 'destroyLelekszam'])
      ->middleware(['auth', 'admin'])->name('admin.lelekszam.destroy');
+
+
+
+// ... a többi routed fölött/alatt bárhol lehet
+
+Route::get('/diagram', [DiagramController::class, 'index'])
+    ->name('diagram.index');
 
 require __DIR__.'/auth.php';
