@@ -2,38 +2,36 @@
 @section('title', 'Diagram')
 
 @section('content')
-  <h2>Felhasználói regisztrációk – {{ $year }}</h2>
-  <p>Az alábbi oszlopdiagram a regisztrált felhasználók számát mutatja hónapokra bontva az adott évben.</p>
+  <h2>Megyénkénti össznépesség</h2>
+  <p>Az alábbi diagram az adott évben a megyék össznépességét mutatja (városok <em>lélekszám</em> rekordjai alapján).</p>
 
-  <form method="GET" action="{{ route('diagram.index') }}" style="margin: 12px 0 20px;">
-      <label for="year">Év:&nbsp;</label>
-      <select name="year" id="year" onchange="this.form.submit()">
-          @foreach ($years as $y)
-              <option value="{{ $y }}" {{ (int)$y === (int)$year ? 'selected' : '' }}>{{ $y }}</option>
-          @endforeach
+  <form method="GET" action="{{ route('diagram.index') }}" style="margin:12px 0 20px;">
+    <label>Év:
+      <select name="year" onchange="this.form.submit()">
+        @foreach ($years as $y)
+          <option value="{{ $y }}" {{ (int)$y === (int)$year ? 'selected' : '' }}>{{ $y }}</option>
+        @endforeach
       </select>
+    </label>
   </form>
 
-  <div style="max-width: 1000px;">
-      <canvas id="regChart"></canvas>
+  <div style="max-width:1100px;">
+    <canvas id="chart"></canvas>
   </div>
-@endsection
 
-@push('scripts')
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const ctx = document.getElementById('regChart').getContext('2d');
-
     const labels = {!! json_encode($labels) !!};
-    const dataValues = {!! json_encode($values) !!};
+    const values = {!! json_encode($values) !!};
 
+    const ctx = document.getElementById('chart').getContext('2d');
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          label: 'Regisztrációk (db)',
-          data: dataValues,
+          label: 'Össznépesség (fő)',
+          data: values
         }]
       },
       options: {
@@ -42,22 +40,17 @@
           legend: { display: true },
           tooltip: {
             callbacks: {
-              label: function (ctx) {
-                const v = ctx.parsed.y || 0;
-                return new Intl.NumberFormat('hu-HU').format(v) + ' db';
-              }
+              label: (ctx) => new Intl.NumberFormat('hu-HU').format(ctx.parsed.y || 0) + ' fő'
             }
           }
         },
         scales: {
           y: {
             beginAtZero: true,
-            ticks: {
-              callback: (v) => new Intl.NumberFormat('hu-HU').format(v)
-            }
+            ticks: { callback: (v) => new Intl.NumberFormat('hu-HU').format(v) }
           }
         }
       }
     });
   </script>
-@endpush
+@endsection

@@ -9,41 +9,34 @@ class DiagramController extends Controller
 {
     public function index(Request $request)
     {
-        // Elérhető évek a users táblából (created_at alapján)
-        $years = DB::table('users')
-            ->selectRaw('YEAR(created_at) as y')
-            ->whereNotNull('created_at')
+        // Elérhető évek a lelekszam táblából
+        $years = DB::table('lelekszam')
+            ->select('ev')
             ->distinct()
-            ->orderByDesc('y')
-            ->pluck('y')
+            ->orderByDesc('ev')
+            ->pluck('ev')
             ->toArray();
 
-        $currentYear = (int)date('Y');
-        $year = (int)$request->input('year', $years[0] ?? $currentYear);
+        // alapértelmezett év: legfrissebb
+        $year = $request->integer('year', $years[0] ?? date('Y'));
 
-        // 12 hónap előkészítése 0-kal
-        $labelsHu = ['Jan','Feb','Már','Ápr','Máj','Jún','Júl','Aug','Sze','Okt','Nov','Dec'];
-        $values = array_fill(0, 12, 0);
-
-        // Havi regisztrációk lekérdezése az adott évre
-        $rows = DB::table('users')
-            ->selectRaw('MONTH(created_at) as m, COUNT(*) as c')
-            ->whereYear('created_at', $year)
-            ->groupBy('m')
-            ->orderBy('m')
+        // Megyénkénti össznépesség az adott évben
+        $rows = DB::table('lelekszam as l')
+            ->join('varosok as v', 'l.varosid', '=', 'v.id')
+            ->join('megyek as m', 'v.megyeid', '=', 'm.id')
+            ->where('l.ev', $year)
+            ->groupBy('m.id', 'm.nev')
+            ->select('m.nev as megye', DB::raw('SUM(l.osszesen) as ossz_nepesseg'))
+            ->orderBy('megye')
             ->get();
 
-        foreach ($rows as $r) {
-            $idx = (int)$r->m - 1;           // 0..11
-            if ($idx >= 0 && $idx < 12) {
-                $values[$idx] = (int)$r->c;
-            }
-        }
+        $labels = $rows->pluck('megye')->values();
+        $values = $rows->pluck('ossz_nepesseg')->map(fn($v) => (int)$v)->values();
 
         return view('diagram', [
             'years'  => $years,
             'year'   => $year,
-            'labels' => $labelsHu,
+            'labels' => $labels,
             'values' => $values,
         ]);
     }

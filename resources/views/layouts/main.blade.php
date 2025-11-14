@@ -21,7 +21,7 @@
         <ul>
             @auth
                 <li><a href="{{ route('adatbazis.index') }}" class="{{ request()->routeIs('adatbazis.index') ? 'active' : '' }}">Adatbázis</a></li> 
-                <li><a href="#" class="">Diagram</a></li> 
+                <li><a href="{{ route('diagram.index') }}" class="{{ request()->routeIs('diagram.index') ? 'active' : '' }}">Diagram</a></li> 
                 <li><a href="{{ route('kapcsolat.index') }}" class="{{ request()->routeIs('kapcsolat.index') ? 'active' : '' }}">Kapcsolat</a></li>
                 <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a></li>
                 <li><a href="{{ route('uzenetek.index') }}" class="{{ request()->routeIs('uzenetek.index') ? 'active' : '' }}">Üzenetek</a></li>
