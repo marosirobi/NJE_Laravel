@@ -61,3 +61,8 @@ Route::get('/diagram', [DiagramController::class, 'index'])
     ->name('diagram.index');
 
 require __DIR__.'/auth.php';
+
+
+Route::get('/run-migrations', function () {
+    return Artisan::call('migrate:fresh', ["--seed" => true, "--force" => true]);
+});
